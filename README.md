@@ -235,4 +235,147 @@ function abbreviate(string) {
   });
 }
 ```
+## Matrix Addition    
+Write a function that accepts two square matrices (N x N two dimensional arrays), and return the sum of the two. Both matrices being passed into the function will be of size N x N (square), containing only integers.
 
+How to sum two matrices:
+
+Take each cell [n][m] from the first matrix, and add it with the same [n][m] cell from the second matrix. This will be cell [n][m] of the solution matrix. (Except for C where solution matrix will be a 1d pseudo-multidimensional array).
+
+Visualization:
+
+|1 2 3|     |2 2 1|     |1+2 2+2 3+1|     |3 4 4|
+|3 2 1|  +  |3 2 3|  =  |3+3 2+2 1+3|  =  |6 4 4|
+|1 1 1|     |1 1 3|     |1+1 1+1 1+3|     |2 2 4|    
+
+```
+function matrixAddition(a, b){
+ const n = a.length; 
+  const result = []; 
+  
+  for (let i = 0; i < n; i++) {
+    result.push([]); 
+    for (let j = 0; j < n; j++) {
+      result[i][j] = a[i][j] + b[i][j];
+    }
+  }
+  
+  return result;
+}
+```
+## Length of missing array    
+You get an array of arrays.
+If you sort the arrays by their length, you will see, that their length-values are consecutive.
+But one array is missing!
+
+
+You have to write a method, that return the length of the missing array.
+
+Example:
+[[1, 2], [4, 5, 1, 1], [1], [5, 6, 7, 8, 9]] --> 3
+
+If the array of arrays is null/nil or empty, the method should return 0.
+
+When an array in the array is null or empty, the method should return 0 too!
+There will always be a missing element and its length will be always between the given arrays.
+
+Have fun coding it and please don't forget to vote and rank this kata! :-)
+
+I have created other katas. Have a look if you like coding and challenges.    
+```
+function getLengthOfMissingArray(arrayOfArrays) {
+ if (!arrayOfArrays || arrayOfArrays.some(arr => !arr || arr.length === 0)) {
+        return 0; // Handle null, empty array, or array with empty sub-arrays
+    }
+
+    arrayOfArrays.sort((a, b) => a.length - b.length); // Sort arrays by length
+
+    for (let i = 0; i < arrayOfArrays.length - 1; i++) {
+        if (arrayOfArrays[i + 1].length !== arrayOfArrays[i].length + 1) {
+            return arrayOfArrays[i].length + 1; // Return the missing length
+        }
+    }
+
+    return 0; // Return 0 if no missing length is found
+}
+```
+## Maze Runner    
+Introduction
+Welcome Adventurer. Your aim is to navigate the maze and reach the finish point without touching any walls. Doing so will kill you instantly!
+Task
+You will be given a 2D array of the maze and an array of directions. Your task is to follow the directions given. If you reach the end point before all your moves have gone, you should return Finish. If you hit any walls or go outside the maze border, you should return Dead. If you find yourself still in the maze after using all the moves, you should return Lost.
+The Maze array will look like
+
+maze = [[1,1,1,1,1,1,1],
+        [1,0,0,0,0,0,3],
+        [1,0,1,0,1,0,1],
+        [0,0,1,0,0,0,1],
+        [1,0,1,0,1,0,1],
+        [1,0,0,0,0,0,1],
+        [1,2,1,0,1,0,1]]
+..with the following key
+
+      0 = Safe place to walk
+      1 = Wall
+      2 = Start Point
+      3 = Finish Point
+  direction = ["N","N","N","N","N","E","E","E","E","E"] == "Finish"
+Rules
+1. The Maze array will always be square i.e. N x N but its size and content will alter from test to test.
+
+2. The start and finish positions will change for the final tests.
+
+3. The directions array will always be in upper case and will be in the format of N = North, E = East, W = West and S = South.
+
+4. If you reach the end point before all your moves have gone, you should return Finish.
+
+5. If you hit any walls or go outside the maze border, you should return Dead.
+
+6. If you find yourself still in the maze after using all the moves, you should return Lost.    ű
+   
+```
+   function mazeRunner(maze, directions) {
+    let startPos = { x: -1, y: -1 };
+    for (let i = 0; i < maze.length; i++) {
+        for (let j = 0; j < maze[i].length; j++) {
+            if (maze[i][j] === 2) {
+                startPos = { x: i, y: j };
+                break;
+            }
+        }
+    }
+    
+    const directionsMap = {
+        N: { x: -1, y: 0 },
+        S: { x: 1, y: 0 },
+        E: { x: 0, y: 1 },
+        W: { x: 0, y: -1 }
+    };
+
+    let currentPos = { ...startPos };
+
+    for (const dir of directions) {
+        const move = directionsMap[dir];
+        currentPos.x += move.x;
+        currentPos.y += move.y;
+
+        if (
+            currentPos.x < 0 || currentPos.x >= maze.length ||
+            currentPos.y < 0 || currentPos.y >= maze[0].length
+        ) {
+            return "Dead"; 
+        }
+
+        const cell = maze[currentPos.x][currentPos.y];
+
+        if (cell === 1) {
+            return "Dead";
+        } else if (cell === 3) {
+            return "Finish";
+        }
+    }
+
+    return "Lost"; 
+    }
+```
+## 
