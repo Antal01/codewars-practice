@@ -460,4 +460,67 @@ function rot13(str) {
   return result;
 }
 ```
+## Memoized Fibonacci    
+The Fibonacci sequence is traditionally used to explain tree recursion.
+
+function fibonacci(n) {
+    if(n==0 || n == 1)
+        return n;
+    return fibonacci(n-1) + fibonacci(n-2);
+}
+This algorithm serves welll its educative purpose but it's tremendously inefficient, not only because of recursion, but because we invoke the fibonacci function twice, and the right branch of recursion (i.e. fibonacci(n-2)) recalculates all the Fibonacci numbers already calculated by the left branch (i.e. fibonacci(n-1)).
+
+This algorithm is so inefficient that the time to calculate any Fibonacci number over 50 is simply too much. You may go for a cup of coffee or go take a nap while you wait for the answer. But if you try it here in Code Wars you will most likely get a code timeout before any answers.
+
+For this particular Kata we want to implement the memoization solution. This will be cool because it will let us keep using the tree recursion algorithm while still keeping it sufficiently optimized to get an answer very rapidly.
+
+The trick of the memoized version is that we will keep a cache data structure (most likely an associative array) where we will store the Fibonacci numbers as we calculate them. When a Fibonacci number is calculated, we first look it up in the cache, if it's not there, we calculate it and put it in the cache, otherwise we returned the cached number.
+
+Refactor the function into a recursive Fibonacci function that using a memoized data structure avoids the deficiencies of tree recursion. Can you make it so the memoization cache is private to this function?
+
+```
+function fibonacci(n) {
+  const cache = {};
+
+  function fibMemoized(n) {
+    if (cache[n]) {
+      return cache[n];
+    }
+
+    if (n < 2) {
+      return n;
+    }
+
+    cache[n] = fibMemoized(n - 1) + fibMemoized(n - 2);
+
+    return cache[n];
+  }
+
+  return fibMemoized(n);
+}
+```
+## Convert A Hex String To RGB    
+When working with color values it can sometimes be useful to extract the individual red, green, and blue (RGB) component values for a color. Implement a function that meets these requirements:
+
+Accepts a case-insensitive hexadecimal color string as its parameter (ex. "#FF9933" or "#ff9933")
+Returns a Map<String, int> with the structure {r: 255, g: 153, b: 51} where r, g, and b range from 0 through 255
+Note: your implementation does not need to support the shorthand form of hexadecimal notation (ie "#FFF")
+
+Example
+"#FF9933" --> {r: 255, g: 153, b: 51}    
+```
+function hexStringToRGB(hexString) {
+  hexString = hexString.replace('#', '');
+
+  const rHex = hexString.substring(0, 2);
+  const gHex = hexString.substring(2, 4);
+  const bHex = hexString.substring(4, 6);
+
+  const r = parseInt(rHex, 16);
+  const g = parseInt(gHex, 16);
+  const b = parseInt(bHex, 16);
+
+  return { r, g, b };
+}
+```
 
