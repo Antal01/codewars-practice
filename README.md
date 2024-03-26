@@ -523,4 +523,153 @@ function hexStringToRGB(hexString) {
   return { r, g, b };
 }
 ```
+## Directions Reduction    
+Once upon a time, on a way through the old wild mountainous west,…
+… a man was given directions to go from one point to another. The directions were "NORTH", "SOUTH", "WEST", "EAST". Clearly "NORTH" and "SOUTH" are opposite, "WEST" and "EAST" too.
+
+Going to one direction and coming back the opposite direction right away is a needless effort. Since this is the wild west, with dreadful weather and not much water, it's important to save yourself some energy, otherwise you might die of thirst!
+
+How I crossed a mountainous desert the smart way.
+The directions given to the man are, for example, the following (depending on the language):
+
+["NORTH", "SOUTH", "SOUTH", "EAST", "WEST", "NORTH", "WEST"].
+or
+{ "NORTH", "SOUTH", "SOUTH", "EAST", "WEST", "NORTH", "WEST" };
+or
+[North, South, South, East, West, North, West]
+You can immediately see that going "NORTH" and immediately "SOUTH" is not reasonable, better stay to the same place! So the task is to give to the man a simplified version of the plan. A better plan in this case is simply:
+
+["WEST"]
+or
+{ "WEST" }
+or
+[West]
+Other examples:
+In ["NORTH", "SOUTH", "EAST", "WEST"], the direction "NORTH" + "SOUTH" is going north and coming back right away.
+
+The path becomes ["EAST", "WEST"], now "EAST" and "WEST" annihilate each other, therefore, the final result is [] (nil in Clojure).
+
+In ["NORTH", "EAST", "WEST", "SOUTH", "WEST", "WEST"], "NORTH" and "SOUTH" are not directly opposite but they become directly opposite after the reduction of "EAST" and "WEST" so the whole path is reducible to ["WEST", "WEST"].
+
+Task
+Write a function dirReduc which will take an array of strings and returns an array of strings with the needless directions removed (W<->E or S<->N side by side).
+
+The Haskell version takes a list of directions with data Direction = North | East | West | South.
+The Clojure version returns nil when the path is reduced to nothing.
+The Rust version takes a slice of enum Direction {North, East, West, South}.
+See more examples in "Sample Tests:"
+Notes
+Not all paths can be made simpler. The path ["NORTH", "WEST", "SOUTH", "EAST"] is not reducible. "NORTH" and "WEST", "WEST" and "SOUTH", "SOUTH" and "EAST" are not directly opposite of each other and can't become such. Hence the result path is itself : ["NORTH", "WEST", "SOUTH", "EAST"].
+if you want to translate, please ask before translating.    
+```
+function dirReduc(arr){
+  const oppositeDirections = {
+        "NORTH": "SOUTH",
+        "SOUTH": "NORTH",
+        "EAST": "WEST",
+        "WEST": "EAST"
+    };
+
+    const reducedPath = [];
+
+    for (const direction of arr) {
+        if (reducedPath.length > 0 && reducedPath[reducedPath.length - 1] === oppositeDirections[direction]) {
+            reducedPath.pop();
+        } else {
+            reducedPath.push(direction);
+        }
+    }
+
+    return reducedPath;
+}
+```
+## Maximum subarray sum  
+The maximum sum subarray problem consists in finding the maximum sum of a contiguous subsequence in an array or list of integers:
+
+maxSequence([-2, 1, -3, 4, -1, 2, 1, -5, 4])
+// should be 6: [4, -1, 2, 1]
+Easy case is when the list is made up of only positive numbers and the maximum sum is the sum of the whole array. If the list is made up of only negative numbers, return 0 instead.
+
+Empty list is considered to have zero greatest sum. Note that the empty list or array is also a valid sublist/subarray.
+
+```
+ let maxEndingHere = 0;
+    let maxSoFar = 0;
+
+    for (const num of arr) {
+        maxEndingHere = Math.max(0, maxEndingHere + num);
+        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+    }
+
+    return maxSoFar;
+```
+## First non-repeating character    
+Write a function named first_non_repeating_letter† that takes a string input, and returns the first character that is not repeated anywhere in the string.
+
+For example, if given the input 'stress', the function should return 't', since the letter t only occurs once in the string, and occurs first in the string.
+
+As an added challenge, upper- and lowercase letters are considered the same character, but the function should return the correct case for the initial letter. For example, the input 'sTreSS' should return 'T'.
+
+If a string contains all repeating characters, it should return an empty string ("");
+
+† Note: the function is called firstNonRepeatingLetter for historical reasons, but your function should handle any Unicode character.    
+```
+function firstNonRepeatingLetter(s) {
+   const charCount = {};
+
+    for (const char of s) {
+        const lowerCaseChar = char.toLowerCase();
+        charCount[lowerCaseChar] = (charCount[lowerCaseChar] || 0) + 1;
+    }
+
+    for (const char of s) {
+        const lowerCaseChar = char.toLowerCase();
+        if (charCount[lowerCaseChar] === 1) {
+            return char;
+        }
+    }
+
+    return '';
+}
+```
+## Weight for weight    
+My friend John and I are members of the "Fat to Fit Club (FFC)". John is worried because each month a list with the weights of members is published and each month he is the last on the list which means he is the heaviest.
+
+I am the one who establishes the list so I told him: "Don't worry any more, I will modify the order of the list". It was decided to attribute a "weight" to numbers. The weight of a number will be from now on the sum of its digits.
+
+For example 99 will have "weight" 18, 100 will have "weight" 1 so in the list 100 will come before 99.
+
+Given a string with the weights of FFC members in normal order can you give this string ordered by "weights" of these numbers?
+
+Example:
+"56 65 74 100 99 68 86 180 90" ordered by numbers weights becomes: 
+
+"100 180 90 56 65 74 68 86 99"
+When two numbers have the same "weight", let us class them as if they were strings (alphabetical ordering) and not numbers:
+
+180 is before 90 since, having the same "weight" (9), it comes before as a string.
+
+All numbers in the list are positive numbers and the list can be empty.    
+```
+function orderWeight(strng) {
+    const weights = strng.split(" ");
+    
+    function calculateWeightSum(number) {
+        return number.split("").reduce((sum, digit) => sum + parseInt(digit), 0);
+    }
+    
+    weights.sort((a, b) => {
+        const weightSumA = calculateWeightSum(a);
+        const weightSumB = calculateWeightSum(b);
+        
+        if (weightSumA === weightSumB) {
+            return a.localeCompare(b);
+        }
+        
+        return weightSumA - weightSumB;
+    });
+    
+    return weights.join(" ");
+}
+```
 
